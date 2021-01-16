@@ -1,9 +1,6 @@
 const express = require("express");
+require("./db/mongoose");
+const app = require("./app");
+const port = process.env.PORT || 3000;
 
-const app = express();
-
-app.get("/", (req, res) => {
-  res.send("Success!");
-});
-
-app.listen(3000);
+app.listen(port);
