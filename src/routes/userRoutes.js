@@ -7,7 +7,7 @@ const { findByIdAndUpdate } = require('../models/userModel');
 
 router.get('/me', authentication, (req, res) => {
   // we have access to the full user on req.user because the user instance is created during the auth check by the middleware
-  res.send(req.user);
+  res.send({ user: req.user });
 });
 
 router.post('/users/signup', async (req, res) => {
@@ -35,7 +35,7 @@ router.post('/users/login', async (req, res) => {
     const token = await user.generateAuthToken();
     res.send({ user, token });
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send('Login has failed');
   }
 });
 
