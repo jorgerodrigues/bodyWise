@@ -3,8 +3,18 @@ const HowDoYouFeel = require('../models/howDoYouFeelModel');
 const authentication = require('../middleware/authentication');
 const router = new express.Router();
 
+//get /updates/me?sortBy=createdAt:desc
 router.get('/updates/me', authentication, async (req, res) => {
-  await req.user.populate('HowDoYouFeel').execPopulate();
+  await req.user
+    .populate({
+      path: 'HowDoYouFeel',
+      options: {
+        sort: {
+          createdAt: -1,
+        },
+      },
+    })
+    .execPopulate();
   res.send(req.user.HowDoYouFeel);
 });
 
@@ -26,11 +36,11 @@ router.get('/updates/:id', authentication, async (req, res) => {
 });
 
 router.post('/me/how-do-you-feel', authentication, async (req, res) => {
+  console.log(req.body.date);
   const newUpdate = new HowDoYouFeel({
     howDoYouFeelToday: req.body.howDoYouFeelToday,
     comments: req.body.comments,
     owner: req.user._id,
-    date: req.user.date,
   });
   if (!newUpdate) {
     throw new Error('Nothing to create!');
@@ -39,7 +49,7 @@ router.post('/me/how-do-you-feel', authentication, async (req, res) => {
     await newUpdate.save();
     res.send(newUpdate);
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(500).send(e);
   }
 });
 
