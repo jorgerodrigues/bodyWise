@@ -14,6 +14,10 @@ const howDoYouFeelUserSchema = new mongoose.Schema(
       required: true,
       ref: 'User',
     },
+    date: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

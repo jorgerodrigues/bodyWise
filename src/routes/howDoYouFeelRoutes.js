@@ -30,6 +30,7 @@ router.post('/me/how-do-you-feel', authentication, async (req, res) => {
     howDoYouFeelToday: req.body.howDoYouFeelToday,
     comments: req.body.comments,
     owner: req.user._id,
+    date: req.user.date,
   });
   if (!newUpdate) {
     throw new Error('Nothing to create!');
