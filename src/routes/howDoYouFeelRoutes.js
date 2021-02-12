@@ -5,20 +5,42 @@ const router = new express.Router();
 
 //get /updates/me?sortBy=createdAt:desc
 router.get('/updates/me', authentication, async (req, res) => {
-  await req.user
-    .populate({
-      path: 'HowDoYouFeel',
-      options: {
-        sort: {
-          createdAt: -1,
+  try {
+    await req.user
+      .populate({
+        path: 'HowDoYouFeel',
+        options: {
+          sort: {
+            createdAt: -1,
+          },
         },
-      },
-    })
-    .execPopulate();
-  res.send(req.user.HowDoYouFeel);
+      })
+      .execPopulate();
+    res.send(req.user.HowDoYouFeel);
+  } catch (e) {
+    res.send(e);
+  }
 });
 
-router.get('/updates/:id', authentication, async (req, res) => {
+router.get('/updates/latest', authentication, async (req, res) => {
+  const itemToBeDisplayed = await HowDoYouFeel.findOne({
+    owner: req.user._id,
+  }).sort({
+    createdAt: -1,
+  });
+  if (!itemToBeDisplayed) {
+    return res.status(400).send('Item not found');
+  }
+
+  try {
+    res.send(itemToBeDisplayed);
+  } catch (e) {
+    res.send(e.message);
+  }
+});
+
+router.get('/updates/item/:id', authentication, async (req, res) => {
+  1;
   const itemToBeDisplayed = await HowDoYouFeel.findOne({
     _id: req.params.id,
     owner: req.user._id,
@@ -36,7 +58,6 @@ router.get('/updates/:id', authentication, async (req, res) => {
 });
 
 router.post('/me/how-do-you-feel', authentication, async (req, res) => {
-  console.log(req.body.date);
   const newUpdate = new HowDoYouFeel({
     howDoYouFeelToday: req.body.howDoYouFeelToday,
     comments: req.body.comments,

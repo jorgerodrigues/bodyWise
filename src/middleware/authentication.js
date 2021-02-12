@@ -12,6 +12,7 @@ const auth = async (req, res, next) => {
     });
 
     if (!user) {
+      console.log('User not found');
       throw new Error('User not found');
     }
     req.token = token;
