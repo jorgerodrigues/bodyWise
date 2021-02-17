@@ -3,7 +3,6 @@ const User = require('../models/userModel');
 const router = new express.Router();
 
 const authentication = require('../middleware/authentication');
-const { findByIdAndUpdate } = require('../models/userModel');
 
 router.get('/me', authentication, (req, res) => {
   // we have access to the full user on req.user because the user instance is created during the auth check by the middleware
@@ -14,7 +13,7 @@ router.post('/users/signup', async (req, res) => {
   const user = new User({
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password,
+    // password: req.body.password,
   });
 
   try {
@@ -29,8 +28,8 @@ router.post('/users/signup', async (req, res) => {
 router.post('/users/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(
-      req.body.email,
-      req.body.password
+      req.body.email
+      // req.body.password
     );
     const token = await user.generateAuthToken();
     res.send({ user, token });

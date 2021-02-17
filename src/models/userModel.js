@@ -17,12 +17,12 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       unique: true,
     },
-    password: {
-      type: String,
-      required: true,
-      minlength: 7,
-      trim: true,
-    },
+    // password: {
+    //   type: String,
+    //   required: false,
+    //   minlength: 7,
+    //   trim: true,
+    // },
     tokens: [
       {
         token: {
@@ -49,16 +49,16 @@ userSchema.pre('save', async function (next) {
 });
 
 // statics are accessible in the whole model. In this case, going through the whole collection of users.
-userSchema.statics.findByCredentials = async (email, password) => {
+userSchema.statics.findByCredentials = async (email) => {
   const user = await User.findOne({ email });
   if (!user) {
     throw new Error('Unable to login');
   }
-  const isMatch = await bcrypt.compare(password, user.password);
+  // const isMatch = await bcrypt.compare(password, user.password);
 
-  if (!isMatch) {
-    throw new Error('Unable to login the user');
-  }
+  // if (!isMatch) {
+  //   throw new Error('Unable to login the user');
+  // }
   return user;
 };
 
@@ -78,7 +78,7 @@ userSchema.methods.generateAuthToken = async function () {
 // toJSON is defined here and will be automatically called by express when serving the routes
 userSchema.methods.toJSON = function () {
   const userObject = this.toObject();
-  delete userObject.password;
+  // delete userObject.password;
   delete userObject.tokens;
 
   return userObject;
