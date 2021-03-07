@@ -16,8 +16,10 @@ router.get('/updates/me', authentication, async (req, res) => {
         },
       })
       .execPopulate();
+    console.log(req.user.howDoYouFeel);
     res.send(req.user.HowDoYouFeel);
   } catch (e) {
+    console.log(e);
     res.send(e);
   }
 });
@@ -28,6 +30,7 @@ router.get('/updates/latest', authentication, async (req, res) => {
   }).sort({
     createdAt: -1,
   });
+  console.log(itemToBeDisplayed);
   if (!itemToBeDisplayed) {
     return res.status(400).send('Item not found');
   }
